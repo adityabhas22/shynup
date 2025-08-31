@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { z } from "zod";
-
-// TODO: Replace with persistent storage solution (database)
-// For now using in-memory storage (data will be lost on function restart)
+import { eq } from "drizzle-orm";
+import { db } from "../database/connection";
+import { serviceRequests, NewServiceRequest } from "../database/schema";
 
 const bookingSchema = z.object({
   city: z.string().min(1),
@@ -12,9 +12,8 @@ const bookingSchema = z.object({
   serviceDate: z.string().min(1),
 });
 
-// In-memory storage for demo purposes (will be lost on function restart)
-// For production, replace with a database
-let serviceRequests: any[] = [];
+// Fallback in-memory storage for when database is unavailable
+let fallbackStorage: any[] = [];
 
 export const handleServiceBooking = async (req: Request, res: Response) => {
   try {
@@ -23,19 +22,24 @@ export const handleServiceBooking = async (req: Request, res: Response) => {
     // Generate unique service request ID
     const serviceRequestId = `SR${Date.now()}${Math.random().toString(36).substr(2, 5).toUpperCase()}`;
 
-    const serviceRequest = {
-      id: serviceRequestId,
-      ...bookingData,
+    const newServiceRequest: NewServiceRequest = {
+      requestId: serviceRequestId,
+      city: bookingData.city,
+      apartmentName: bookingData.apartmentName,
+      flatNumber: bookingData.flatNumber,
+      services: bookingData.services,
+      serviceDate: bookingData.serviceDate,
       status: "pending",
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
     };
 
-    // Add new request to in-memory storage
-    serviceRequests.push(serviceRequest);
+    // Insert into database
+    const result = await db
+      .insert(serviceRequests)
+      .values(newServiceRequest)
+      .returning();
 
     console.log(`New service request created: ${serviceRequestId}`);
-    console.log("Request details:", serviceRequest);
+    console.log("Request details:", result[0]);
 
     res.status(201).json({
       success: true,
@@ -63,10 +67,12 @@ export const handleServiceBooking = async (req: Request, res: Response) => {
 
 export const getServiceRequests = async (req: Request, res: Response) => {
   try {
+    const allRequests = await db.select().from(serviceRequests);
+
     res.json({
       success: true,
-      data: serviceRequests,
-      total: serviceRequests.length,
+      data: allRequests,
+      total: allRequests.length,
     });
   } catch (error) {
     console.error("Error retrieving service requests:", error);
@@ -80,7 +86,11 @@ export const getServiceRequests = async (req: Request, res: Response) => {
 export const getServiceRequestById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const serviceRequest = serviceRequests.find((req: any) => req.id === id);
+    const [serviceRequest] = await db
+      .select()
+      .from(serviceRequests)
+      .where(eq(serviceRequests.requestId, id))
+      .limit(1);
 
     if (!serviceRequest) {
       return res.status(404).json({
@@ -125,22 +135,26 @@ export const updateServiceRequestStatus = async (
       });
     }
 
-    const requestIndex = serviceRequests.findIndex((req: any) => req.id === id);
+    const result = await db
+      .update(serviceRequests)
+      .set({
+        status,
+        updatedAt: new Date(),
+      })
+      .where(eq(serviceRequests.requestId, id))
+      .returning();
 
-    if (requestIndex === -1) {
+    if (result.length === 0) {
       return res.status(404).json({
         success: false,
         message: "Service request not found",
       });
     }
 
-    serviceRequests[requestIndex].status = status;
-    serviceRequests[requestIndex].updatedAt = new Date().toISOString();
-
     res.json({
       success: true,
       message: "Service request status updated successfully",
-      data: serviceRequests[requestIndex],
+      data: result[0],
     });
   } catch (error) {
     console.error("Error updating service request status:", error);

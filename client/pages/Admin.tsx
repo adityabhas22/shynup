@@ -113,7 +113,9 @@ export default function Admin() {
         body: JSON.stringify({ status: newStatus }),
       });
 
-      if (response.ok) {
+      const result = await response.json();
+
+      if (result.success) {
         toast({
           title: "Status Updated",
           description: `Service request status updated to ${newStatus}.`,
@@ -122,7 +124,7 @@ export default function Admin() {
       } else {
         toast({
           title: "Update Failed",
-          description: "Failed to update service request status.",
+          description: result.message || "Failed to update service request status.",
           variant: "destructive",
         });
       }
@@ -298,19 +300,19 @@ export default function Admin() {
         ) : (
           <div className="grid gap-6">
             {serviceRequests.map((request) => (
-              <Card key={request.id} className="shadow-lg">
+              <Card key={(request as any).id || request.id} className="shadow-lg">
                 <CardHeader>
                   <div className="flex justify-between items-start">
                     <div>
                       <CardTitle className="text-shynup-black font-proxima text-xl">
-                        Service Request #{request.id}
+                        Service Request #{(request as any).request_id || request.id}
                       </CardTitle>
                       <p className="text-gray-600 mt-1">
-                        Created: {formatDate(request.createdAt)}
+                        Created: {formatDate((request as any).created_at || request.createdAt)}
                       </p>
                     </div>
-                    <Badge variant={getStatusBadgeVariant(request.status)}>
-                      {request.status.toUpperCase()}
+                    <Badge variant={getStatusBadgeVariant((request as any).status || request.status)}>
+                      {((request as any).status || request.status).toUpperCase()}
                     </Badge>
                   </div>
                 </CardHeader>
@@ -318,23 +320,23 @@ export default function Admin() {
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                     <div>
                       <Label className="text-shynup-black font-proxima font-semibold">City</Label>
-                      <p className="text-gray-700">{request.city}</p>
+                      <p className="text-gray-700">{(request as any).city || request.city}</p>
                     </div>
                     <div>
                       <Label className="text-shynup-black font-proxima font-semibold">Apartment</Label>
-                      <p className="text-gray-700">{request.apartmentName}</p>
+                      <p className="text-gray-700">{(request as any).apartment_name || request.apartmentName}</p>
                     </div>
                     <div>
                       <Label className="text-shynup-black font-proxima font-semibold">Flat Number</Label>
-                      <p className="text-gray-700">{request.flatNumber}</p>
+                      <p className="text-gray-700">{(request as any).flat_number || request.flatNumber}</p>
                     </div>
                     <div>
                       <Label className="text-shynup-black font-proxima font-semibold">Service</Label>
-                      <p className="text-gray-700">{request.services}</p>
+                      <p className="text-gray-700">{(request as any).services || request.services}</p>
                     </div>
                     <div>
                       <Label className="text-shynup-black font-proxima font-semibold">Service Date</Label>
-                      <p className="text-gray-700">{new Date(request.serviceDate + 'T00:00:00').toLocaleDateString("en-IN")}</p>
+                      <p className="text-gray-700">{new Date((request as any).service_date || (request as any).serviceDate || request.serviceDate + 'T00:00:00').toLocaleDateString("en-IN")}</p>
                     </div>
                     {(request as any).startTime && (request as any).endTime && (
                       <div>
@@ -346,14 +348,14 @@ export default function Admin() {
 
                   <div className="flex items-center justify-between">
                     <div className="text-sm text-gray-600">
-                      Last updated: {formatDate(request.updatedAt)}
+                      Last updated: {formatDate((request as any).updated_at || request.updatedAt)}
                     </div>
                     <div className="flex items-center gap-2">
                       <Label className="text-shynup-black font-proxima">Update Status:</Label>
                       <Select
-                        value={request.status}
-                        onValueChange={(value) => updateRequestStatus(request.id, value)}
-                        disabled={updatingStatus === request.id}
+                        value={(request as any).status || request.status}
+                        onValueChange={(value) => updateRequestStatus((request as any).request_id || request.id, value)}
+                        disabled={updatingStatus === ((request as any).request_id || request.id)}
                       >
                         <SelectTrigger className="w-40">
                           <SelectValue />
