@@ -2,6 +2,12 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import { handleDemo } from "./routes/demo";
+import {
+  handleServiceBooking,
+  getServiceRequests,
+  getServiceRequestById,
+  updateServiceRequestStatus,
+} from "./routes/booking";
 
 export function createServer() {
   const app = express();
@@ -18,6 +24,12 @@ export function createServer() {
   });
 
   app.get("/api/demo", handleDemo);
+
+  // Service booking routes
+  app.post("/api/book-service", handleServiceBooking);
+  app.get("/api/service-requests", getServiceRequests);
+  app.get("/api/service-requests/:id", getServiceRequestById);
+  app.patch("/api/service-requests/:id/status", updateServiceRequestStatus);
 
   return app;
 }

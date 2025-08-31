@@ -15,6 +15,7 @@ import HowWeWork from "./pages/HowWeWork";
 import TermsConditions from "./pages/TermsConditions";
 import SecurityMeasures from "./pages/SecurityMeasures";
 import ContactUs from "./pages/ContactUs";
+import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -35,6 +36,7 @@ const App = () => (
           <Route path="/terms-conditions" element={<TermsConditions />} />
           <Route path="/security-measures" element={<SecurityMeasures />} />
           <Route path="/contact-us" element={<ContactUs />} />
+          <Route path="/admin-only" element={<Admin />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
