@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import { z } from "zod";
-import fs from "fs";
-import path from "path";
+
+// TODO: Replace with persistent storage solution (database)
+// For now using in-memory storage (data will be lost on function restart)
 
 const bookingSchema = z.object({
   city: z.string().min(1),
@@ -11,12 +12,9 @@ const bookingSchema = z.object({
   serviceDate: z.string().min(1),
 });
 
-const SERVICE_REQUESTS_FILE = path.join(process.cwd(), "service-requests.json");
-
-// Ensure the service requests file exists
-if (!fs.existsSync(SERVICE_REQUESTS_FILE)) {
-  fs.writeFileSync(SERVICE_REQUESTS_FILE, JSON.stringify([], null, 2));
-}
+// In-memory storage for demo purposes (will be lost on function restart)
+// For production, replace with a database
+let serviceRequests: any[] = [];
 
 export const handleServiceBooking = async (req: Request, res: Response) => {
   try {
@@ -33,19 +31,8 @@ export const handleServiceBooking = async (req: Request, res: Response) => {
       updatedAt: new Date().toISOString(),
     };
 
-    // Read existing service requests
-    const existingRequests = JSON.parse(
-      fs.readFileSync(SERVICE_REQUESTS_FILE, "utf-8"),
-    );
-
-    // Add new request
-    existingRequests.push(serviceRequest);
-
-    // Write back to file
-    fs.writeFileSync(
-      SERVICE_REQUESTS_FILE,
-      JSON.stringify(existingRequests, null, 2),
-    );
+    // Add new request to in-memory storage
+    serviceRequests.push(serviceRequest);
 
     console.log(`New service request created: ${serviceRequestId}`);
     console.log("Request details:", serviceRequest);
@@ -76,10 +63,6 @@ export const handleServiceBooking = async (req: Request, res: Response) => {
 
 export const getServiceRequests = async (req: Request, res: Response) => {
   try {
-    const serviceRequests = JSON.parse(
-      fs.readFileSync(SERVICE_REQUESTS_FILE, "utf-8"),
-    );
-
     res.json({
       success: true,
       data: serviceRequests,
@@ -97,10 +80,6 @@ export const getServiceRequests = async (req: Request, res: Response) => {
 export const getServiceRequestById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const serviceRequests = JSON.parse(
-      fs.readFileSync(SERVICE_REQUESTS_FILE, "utf-8"),
-    );
-
     const serviceRequest = serviceRequests.find((req: any) => req.id === id);
 
     if (!serviceRequest) {
@@ -146,9 +125,6 @@ export const updateServiceRequestStatus = async (
       });
     }
 
-    const serviceRequests = JSON.parse(
-      fs.readFileSync(SERVICE_REQUESTS_FILE, "utf-8"),
-    );
     const requestIndex = serviceRequests.findIndex((req: any) => req.id === id);
 
     if (requestIndex === -1) {
@@ -160,11 +136,6 @@ export const updateServiceRequestStatus = async (
 
     serviceRequests[requestIndex].status = status;
     serviceRequests[requestIndex].updatedAt = new Date().toISOString();
-
-    fs.writeFileSync(
-      SERVICE_REQUESTS_FILE,
-      JSON.stringify(serviceRequests, null, 2),
-    );
 
     res.json({
       success: true,
