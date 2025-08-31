@@ -16,12 +16,12 @@
    */
   :root {
     /* Shynup Brand Colors */
-    --shynup-turquoise: #6EDCD8;
-    --shynup-background: #FDFCFB;
+    --shynup-turquoise: #6edcd8;
+    --shynup-background: #fdfcfb;
     --shynup-black: #000000;
-    --shynup-gray: #3B3B3B;
-    --shynup-input-gray: #D9D9D9;
-    --shynup-white: #FFFFFF;
+    --shynup-gray: #3b3b3b;
+    --shynup-input-gray: #d9d9d9;
+    --shynup-white: #ffffff;
 
     /* Updated theme variables for Shynup */
     --background: 253 252 251; /* #FDFCFB */
@@ -110,11 +110,19 @@
 
   body {
     @apply bg-shynup-background text-shynup-black;
-    font-family: 'Instrument Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family:
+      "Instrument Sans",
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Roboto,
+      sans-serif;
   }
 
   /* Proxima Nova fallback using system fonts */
   .font-proxima {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial,
+      sans-serif;
   }
 }

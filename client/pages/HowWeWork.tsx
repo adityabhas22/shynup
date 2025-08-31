@@ -5,29 +5,34 @@ export default function HowWeWork() {
   return (
     <div className="min-h-screen bg-shynup-background">
       <Header showHomeIcon={true} />
-      
+
       {/* How We Work Content */}
       <section className="px-7 py-4">
         <h1 className="text-shynup-black text-center font-proxima text-[30px] font-bold leading-normal mb-8">
           How we work?
         </h1>
-        
+
         {/* Process Description */}
         <div className="space-y-6 text-shynup-black font-instrument text-[17px] leading-normal">
           <p>
-            While onboarding the maids, we get security-related documents signed by them, and get the background verifications done.
+            While onboarding the maids, we get security-related documents signed
+            by them, and get the background verifications done.
           </p>
-          
+
           <p>
-            The customer is free to choose the time-slot in which he/she wants the maid. A maid is deployed to work in that time-slot. The same maid will be deployed everyday.
+            The customer is free to choose the time-slot in which he/she wants
+            the maid. A maid is deployed to work in that time-slot. The same
+            maid will be deployed everyday.
           </p>
-          
+
           <p>
-            The prices vary depending on the location of the customer and availability of maid.
+            The prices vary depending on the location of the customer and
+            availability of maid.
           </p>
-          
+
           <p>
-            The customer has to pay <span className="font-jeju">Shynup</span> on a monthly-basis.
+            The customer has to pay <span className="font-jeju">Shynup</span> on
+            a monthly-basis.
           </p>
         </div>
       </section>

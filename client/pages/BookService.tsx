@@ -18,13 +18,13 @@ export default function BookService() {
     flatNumber: "",
     services: "",
     startTime: "",
-    endTime: ""
+    endTime: "",
   });
 
   const handleInputChange = (field: keyof BookingForm, value: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
@@ -39,19 +39,19 @@ export default function BookService() {
     "Basic Cleaning (Brooming, Mopping, Dusting)",
     "Deep Cleaning (Basic + Toilet Cleaning)",
     "Full Service (All services + Utensils washing)",
-    "Custom Package"
+    "Custom Package",
   ];
 
   return (
     <div className="min-h-screen bg-shynup-background">
       <Header showHomeIcon={true} />
-      
+
       {/* Book Service Content */}
       <section className="px-5 py-4 max-w-md mx-auto">
         <h1 className="text-shynup-black text-center font-proxima text-[30px] font-bold leading-normal mb-8">
           Book a service
         </h1>
-        
+
         {/* Booking Form */}
         <div className="space-y-6">
           {/* City Selection */}
@@ -66,7 +66,9 @@ export default function BookService() {
             >
               <option value="">Choose a city</option>
               {cities.map((city) => (
-                <option key={city} value={city}>{city}</option>
+                <option key={city} value={city}>
+                  {city}
+                </option>
               ))}
             </select>
           </div>
@@ -79,7 +81,9 @@ export default function BookService() {
             <input
               type="text"
               value={formData.apartmentName}
-              onChange={(e) => handleInputChange("apartmentName", e.target.value)}
+              onChange={(e) =>
+                handleInputChange("apartmentName", e.target.value)
+              }
               className="w-full h-[22px] border-2 border-shynup-black bg-shynup-input-gray px-2 text-sm"
               placeholder="Apartment name"
             />
@@ -111,7 +115,9 @@ export default function BookService() {
             >
               <option value="">Choose services</option>
               {serviceOptions.map((service) => (
-                <option key={service} value={service}>{service}</option>
+                <option key={service} value={service}>
+                  {service}
+                </option>
               ))}
             </select>
           </div>
@@ -126,11 +132,15 @@ export default function BookService() {
                 <input
                   type="time"
                   value={formData.startTime}
-                  onChange={(e) => handleInputChange("startTime", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("startTime", e.target.value)
+                  }
                   className="w-[100px] h-[22px] border-2 border-shynup-black bg-shynup-input-gray px-1 text-sm"
                 />
               </div>
-              <span className="text-shynup-black font-proxima text-[20px] font-normal">to</span>
+              <span className="text-shynup-black font-proxima text-[20px] font-normal">
+                to
+              </span>
               <div className="flex items-center">
                 <input
                   type="time"

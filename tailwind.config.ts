@@ -70,15 +70,16 @@ export default {
       },
       fontFamily: {
         // Shynup Custom Fonts
-        'jeju': ['JejuHallasan', 'cursive'],
-        'proxima': ['Proxima Nova', 'sans-serif'],
-        'instrument': ['Instrument Sans', 'sans-serif'],
-        'inter': ['Inter', 'sans-serif'],
-        'istok': ['Istok Web', 'sans-serif'],
-        'inria': ['Inria Serif', 'serif'],
+        jeju: ["JejuHallasan", "cursive"],
+        proxima: ["Proxima Nova", "sans-serif"],
+        instrument: ["Instrument Sans", "sans-serif"],
+        inter: ["Inter", "sans-serif"],
+        istok: ["Istok Web", "sans-serif"],
+        inria: ["Inria Serif", "serif"],
       },
       backgroundImage: {
-        'shynup-gradient': 'linear-gradient(180deg, #6EDCD8 92.65%, #FDFCFB 100%)',
+        "shynup-gradient":
+          "linear-gradient(180deg, #6EDCD8 92.65%, #FDFCFB 100%)",
       },
       borderRadius: {
         lg: "var(--radius)",
