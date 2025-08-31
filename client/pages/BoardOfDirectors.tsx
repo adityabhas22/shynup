@@ -94,7 +94,7 @@ export default function BoardOfDirectors() {
         <img
           src="https://api.builder.io/api/v1/image/assets/TEMP/985324c99c5cb631991da44b227c9b288bf0519a?width=1030"
           alt="Shynup Maid Illustration"
-          className="w-[515px] h-[391px] object-contain mx-auto block -ml-16"
+          className="w-[515px] h-[391px] object-contain mx-auto block"
         />
       </div>
 

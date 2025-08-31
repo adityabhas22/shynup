@@ -42,7 +42,7 @@ export default function HowWeWork() {
         <img
           src="https://api.builder.io/api/v1/image/assets/TEMP/0c3ed3e746d4e9d19a2c6982a346b38a4addb0da?width=1029"
           alt="Shynup Maid Illustration"
-          className="w-[514px] h-[391px] object-contain mx-auto block -ml-16"
+          className="w-[514px] h-[391px] object-contain mx-auto block"
         />
       </div>
 

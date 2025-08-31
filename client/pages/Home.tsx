@@ -174,7 +174,7 @@ export default function Home() {
         <img
           src="https://api.builder.io/api/v1/image/assets/TEMP/bb1d9336fbc9cb1bd64f412a82d8c08049bfdee5?width=1029"
           alt="Shynup Maid Illustration"
-          className="w-[514px] h-[391px] object-contain mx-auto block -ml-16"
+          className="w-[514px] h-[391px] object-contain mx-auto block"
         />
       </div>
 
