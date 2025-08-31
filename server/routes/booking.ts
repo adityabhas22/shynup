@@ -1,8 +1,6 @@
 import { Request, Response } from "express";
 import { z } from "zod";
-import { eq } from "drizzle-orm";
-import { db } from "../database/connection";
-import { serviceRequests, NewServiceRequest } from "../database/schema";
+import { getStore } from "@netlify/blobs";
 
 const bookingSchema = z.object({
   city: z.string().min(1),
@@ -12,9 +10,6 @@ const bookingSchema = z.object({
   serviceDate: z.string().min(1),
 });
 
-// Fallback in-memory storage for when database is unavailable
-let fallbackStorage: any[] = [];
-
 export const handleServiceBooking = async (req: Request, res: Response) => {
   try {
     const bookingData = bookingSchema.parse(req.body);
@@ -22,7 +17,8 @@ export const handleServiceBooking = async (req: Request, res: Response) => {
     // Generate unique service request ID
     const serviceRequestId = `SR${Date.now()}${Math.random().toString(36).substr(2, 5).toUpperCase()}`;
 
-    const newServiceRequest: NewServiceRequest = {
+    const serviceRequestData = {
+      id: serviceRequestId,
       requestId: serviceRequestId,
       city: bookingData.city,
       apartmentName: bookingData.apartmentName,
@@ -30,16 +26,16 @@ export const handleServiceBooking = async (req: Request, res: Response) => {
       services: bookingData.services,
       serviceDate: bookingData.serviceDate,
       status: "pending",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
 
-    // Insert into database
-    const result = await db
-      .insert(serviceRequests)
-      .values(newServiceRequest)
-      .returning();
+    // Store in Netlify Blobs
+    const store = getStore("service-requests");
+    await store.setJSON(serviceRequestId, serviceRequestData);
 
     console.log(`New service request created: ${serviceRequestId}`);
-    console.log("Request details:", result[0]);
+    console.log("Request details:", serviceRequestData);
 
     res.status(201).json({
       success: true,
@@ -67,7 +63,16 @@ export const handleServiceBooking = async (req: Request, res: Response) => {
 
 export const getServiceRequests = async (req: Request, res: Response) => {
   try {
-    const allRequests = await db.select().from(serviceRequests);
+    const store = getStore("service-requests");
+    const { blobs } = await store.list();
+
+    // Get all service requests
+    const allRequests = await Promise.all(
+      blobs.map(async (blob) => {
+        const data = await store.get(blob.key, { type: "json" });
+        return data;
+      }),
+    );
 
     res.json({
       success: true,
@@ -86,11 +91,9 @@ export const getServiceRequests = async (req: Request, res: Response) => {
 export const getServiceRequestById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const [serviceRequest] = await db
-      .select()
-      .from(serviceRequests)
-      .where(eq(serviceRequests.requestId, id))
-      .limit(1);
+    const store = getStore("service-requests");
+
+    const serviceRequest = await store.get(id, { type: "json" });
 
     if (!serviceRequest) {
       return res.status(404).json({
@@ -135,26 +138,32 @@ export const updateServiceRequestStatus = async (
       });
     }
 
-    const result = await db
-      .update(serviceRequests)
-      .set({
-        status,
-        updatedAt: new Date(),
-      })
-      .where(eq(serviceRequests.requestId, id))
-      .returning();
+    const store = getStore("service-requests");
 
-    if (result.length === 0) {
+    // Get current data
+    const currentData = await store.get(id, { type: "json" });
+
+    if (!currentData) {
       return res.status(404).json({
         success: false,
         message: "Service request not found",
       });
     }
 
+    // Update the data
+    const updatedData = {
+      ...currentData,
+      status,
+      updatedAt: new Date().toISOString(),
+    };
+
+    // Save updated data
+    await store.setJSON(id, updatedData);
+
     res.json({
       success: true,
       message: "Service request status updated successfully",
-      data: result[0],
+      data: updatedData,
     });
   } catch (error) {
     console.error("Error updating service request status:", error);
