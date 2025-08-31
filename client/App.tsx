@@ -12,6 +12,9 @@ import OurVision from "./pages/OurVision";
 import BookService from "./pages/BookService";
 import BoardOfDirectors from "./pages/BoardOfDirectors";
 import HowWeWork from "./pages/HowWeWork";
+import TermsConditions from "./pages/TermsConditions";
+import SecurityMeasures from "./pages/SecurityMeasures";
+import ContactUs from "./pages/ContactUs";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
