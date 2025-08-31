@@ -14,6 +14,16 @@ export default {
     },
     extend: {
       colors: {
+        // Shynup Brand Colors
+        shynup: {
+          turquoise: "#6EDCD8",
+          background: "#FDFCFB",
+          black: "#000000",
+          gray: "#3B3B3B",
+          "input-gray": "#D9D9D9",
+          white: "#FFFFFF",
+        },
+        // Keep existing shadcn colors for compatibility
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -57,6 +67,18 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+      },
+      fontFamily: {
+        // Shynup Custom Fonts
+        'jeju': ['JejuHallasan', 'cursive'],
+        'proxima': ['Proxima Nova', 'sans-serif'],
+        'instrument': ['Instrument Sans', 'sans-serif'],
+        'inter': ['Inter', 'sans-serif'],
+        'istok': ['Istok Web', 'sans-serif'],
+        'inria': ['Inria Serif', 'serif'],
+      },
+      backgroundImage: {
+        'shynup-gradient': 'linear-gradient(180deg, #6EDCD8 92.65%, #FDFCFB 100%)',
       },
       borderRadius: {
         lg: "var(--radius)",
